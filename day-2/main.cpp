@@ -1,4 +1,4 @@
-#define PART_ONE
+#define PART_TWO
 
 #include <fstream>
 #include <iostream>
@@ -63,3 +63,55 @@ int main()
 }
 
 #endif // PART_ONE
+
+#ifdef PART_TWO
+
+int main()
+{
+	fstream f("input.txt", fstream::in);
+
+	int validPasswords = 0;
+
+	bool getInput = true;
+	while (getInput)
+	{
+		unsigned int positionOne;
+		f >> positionOne;
+
+		char dash;
+		f >> dash;
+
+		unsigned int positionTwo;
+		f >> positionTwo;
+
+		char letter;
+		f >> letter;
+
+		char colon;
+		f >> colon;
+
+		string password;
+		f >> password;
+
+		if (f.eof())
+		{
+			getInput = false;
+		}
+
+		bool isAtPositionOne = password[positionOne - 1] == letter;
+		bool isAtPositionTwo = password[positionTwo - 1] == letter;
+
+		if (isAtPositionOne ^ isAtPositionTwo)
+		{
+			validPasswords++;
+		}
+	}
+
+	f.close();
+
+	cout << validPasswords << endl;
+
+	return 0;
+}
+
+#endif // PART_TWO

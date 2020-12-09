@@ -11,6 +11,31 @@
 
 using namespace std;
 
+bool canContain(map<string, map<string, int>> bagRules, string toFind, string color)
+{
+	if (bagRules[color].empty())
+	{
+		return false;
+	}
+	
+	bool found = bagRules[color].find(toFind) != bagRules[color].end();
+	if (found)
+	{
+		return true;
+	}
+
+	for (pair<string, int> innerBag : bagRules[color])
+	{
+		string innerColor = innerBag.first;
+		bool contains = canContain(bagRules, toFind, innerColor);
+		if (contains)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 int main()
 {
 	fstream f("input.txt", fstream::in);
@@ -68,14 +93,24 @@ int main()
 		}
 	}
 
-	for (pair<string, map<string, int>> outerBag : bagRules)
+	const string bagToFind = "shiny gold";
+	int canContainCount = 0;
+	for (pair<string, map<string, int>> rule : bagRules)
 	{
-		cout << outerBag.first << ":" << endl;
-		for (pair <string, int> innerBag : outerBag.second)
+		string color = rule.first;
+		if (color == bagToFind)
 		{
-			cout << "- " << innerBag.second << " " << innerBag.first << endl;
+			continue;
+		}
+		bool colorCanContain = canContain(bagRules, bagToFind, color);
+
+		if (colorCanContain)
+		{
+			canContainCount++;
 		}
 	}
+
+	cout << canContainCount << endl;
 
 	return 0;
 }

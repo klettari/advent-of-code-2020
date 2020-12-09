@@ -39,39 +39,33 @@ int main()
 		string ignore;
 		ss >> ignore >> ignore; // "bags", "contain"
 
-		int count;
-		ss >> count;
-
-		if (count == 0) // "no"
+		while (true)
 		{
-			bagRules[bagColor] = {};
-			continue;
+			int count;
+			ss >> count;
+
+			if (count == 0) // "no"
+			{
+				bagRules[bagColor] = {};
+				break;
+			}
+
+			ss >> bagColorOne >> bagColorTwo; 
+
+			ssCombine.str("");
+			ssCombine << bagColorOne << " " << bagColorTwo;
+			string bagColorInside = ssCombine.str();
+
+			bagRules[bagColor][bagColorInside] = count;
+
+			ss >> ignore; // "bags," or "bags."
+
+			char delimiter = ignore[ignore.size() - 1];
+			if (delimiter == '.')
+			{
+				break;
+			}
 		}
-
-		ss >> bagColorOne >> bagColorTwo; 
-
-		ssCombine.str("");
-		ssCombine << bagColorOne << " " << bagColorTwo;
-		string bagColorInside = ssCombine.str();
-
-		bagRules[bagColor][bagColorInside] = count;
-
-		ss >> ignore; // "bags," or "bags."
-
-		char delimiter = ignore[ignore.size() - 1];
-		if (delimiter == '.')
-		{
-			continue;
-		}
-
-		ss >> count;
-		ss >> bagColorOne >> bagColorTwo;
-
-		ssCombine.str("");
-		ssCombine << bagColorOne << " " << bagColorTwo;
-		bagColorInside = ssCombine.str();
-
-		bagRules[bagColor][bagColorInside] = count;
 	}
 
 	for (pair<string, map<string, int>> outerBag : bagRules)

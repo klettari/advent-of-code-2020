@@ -1,4 +1,4 @@
-#define _PART_ONE_
+﻿#define _PART_TWO_
 
 #ifdef _PART_ONE_
 
@@ -116,3 +116,106 @@ int main()
 }
 
 #endif // _PART_ONE_
+
+#ifdef _PART_TWO_
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <map>
+#include <sstream>
+
+using namespace std;
+
+int countBagsInside(map<string, map<string, int>> & bagRules, string color)
+{
+	map<string, int> rulesForColor = bagRules[color];
+
+	if (rulesForColor.empty())
+	{
+		return 0;
+	}
+
+	int count = 0;
+
+	for (pair<string, int> rule : rulesForColor)
+	{
+		string currentColor = rule.first;
+		int currentCount = rule.second;
+
+		int innerCount = currentCount * ( countBagsInside(bagRules, currentColor) );
+		count += innerCount;
+
+		count += currentCount;
+	}
+
+	return count;
+}
+
+int main()
+{
+	fstream f("input.txt", fstream::in);
+	bool hasInput = true;
+	map<string, map<string, int>> bagRules;
+
+	while (hasInput)
+	{
+		string rule;
+		getline(f, rule);
+
+		if (f.eof())
+		{
+			hasInput = false;
+		}
+
+		string bagColorOne;
+		string bagColorTwo;
+		stringstream ss(rule);
+		ss >> bagColorOne >> bagColorTwo;
+
+		stringstream ssCombine;
+		ssCombine << bagColorOne << " " << bagColorTwo;
+		string bagColor = ssCombine.str();
+
+		string ignore;
+		ss >> ignore >> ignore; // "bags", "contain"
+
+		while (true)
+		{
+			int count;
+			ss >> count;
+
+			if (count == 0) // "no"
+			{
+				bagRules[bagColor] = {};
+				break;
+			}
+
+			ss >> bagColorOne >> bagColorTwo;
+
+			ssCombine.str("");
+			ssCombine << bagColorOne << " " << bagColorTwo;
+			string bagColorInside = ssCombine.str();
+
+			bagRules[bagColor][bagColorInside] = count;
+
+			ss >> ignore; // "bags," or "bags."
+
+			char delimiter = ignore[ignore.size() - 1];
+			if (delimiter == '.')
+			{
+				break;
+			}
+		}
+	}
+
+	string yourBagColor = "shiny gold";
+	int totalBagsInside = countBagsInside(bagRules, yourBagColor);
+
+	cout << totalBagsInside << endl;
+
+	return 0;
+}
+
+#endif // _PART_TWO_

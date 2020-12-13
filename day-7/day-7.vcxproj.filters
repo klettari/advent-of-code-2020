@@ -26,5 +26,6 @@
     <Text Include="input.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="sample2.txt" />
   </ItemGroup>
 </Project>
